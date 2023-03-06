@@ -1,4 +1,6 @@
-import { Bot , Middleware, Context, Keyboard, InlineKeyboard,} from "grammy";
+import { Bot , Middleware, Context, Keyboard, InlineKeyboard,session, SessionFlavor } from "grammy";
+//import { Session } from 'grammy/out/platform';
+
 import dotenv from 'dotenv';
 import validUrl from 'valid-url';
 dotenv.config();
@@ -7,71 +9,89 @@ dotenv.config();
 
 const apiToken = process.env.TelegramToken;
 const carlosTelegramID= process.env.carlosTelegramID;
-
-// Create an instance of the `Bot` class and pass your authentication token to it.
-const bot = new Bot(apiToken!); // <-- put your authentication token between the ""
-
-// You can now register listeners on your bot object `bot`.
-// grammY will call the listeners when users send messages to your bot.
-
-// Define a list of authorized users
-const allowedUserIds = [carlosTelegramID];
-
-// Create a middleware function that checks if the user ID is in the allowed list
-const checkUserMiddleware: Middleware<Context> = async (ctx, next) => {
-    const userId = ctx.from?.id;
-    if (userId && allowedUserIds.includes(userId.toString())) {
-      // User is allowed, continue to the next middleware
-      await next();
-    } else {
-      // User is not allowed, send an error message and do not continue
-      await ctx.reply('Sorry, you are not authorized to use this bot.');
+try {
+    // Define the shape of our session.
+    interface SessionData {
+      url?: string;
     }
-  };
-bot.use(checkUserMiddleware);
-
-/*
-
-// Define a command handler that sends a message with a button
-bot.command('url', async (ctx?: Context) => {
-    if (ctx && ctx.chat) { // Add a type guard to check if ctx and ctx.chat are defined
-      const replyMarkup = {
-        keyboard: [
-          [{ text: 'Enter URL', request_contact: true }]
-        ],
-        resize_keyboard: true,
-        one_time_keyboard: true,
-      };
-      await bot.api.sendMessage(ctx.chat.id, 'Click the button to enter a URL:', {
-        reply_markup: replyMarkup
-      });
-    }
-  });
-*/
-// Define a middleware function that checks if the user's message contains a URL
-const checkUrlMiddleware = async (ctx: Context, next: () => Promise<void>) => {
-    if (ctx && ctx.chat && ctx.message && ctx.message.text) { // Add a type guard to check if ctx and its properties are defined
-      const urlRegex = /(https?:\/\/[^\s]+)/g;
-      if (urlRegex.test(ctx.message.text)) {
-        const options = new InlineKeyboard().text('Option 1', '1').text('Option 2', '2');
-        await bot.api.sendMessage(ctx.chat.id, 'Select an option:', { reply_markup: options });
+  
+    // Flavor the context type to include sessions.
+    type MyContext = Context & SessionFlavor<SessionData>;
+  
+    // Define a list of authorized users
+    const allowedUserIds = [carlosTelegramID];
+  
+    const bot = new Bot<MyContext>(apiToken!);
+  
+// Define the shape of our session.
+interface SessionData {
+    url?: string;
+  }
+  
+  // Define the initial session value.
+  function initial(): SessionData {
+    return { url: undefined };
+  }
+  
+  // Install session middleware with the initial session value.
+  bot.use(session({ initial }));
+  
+  
+    // Create a middleware function that checks if the user ID is in the allowed list
+    const checkUserMiddleware: Middleware<Context> = async (ctx, next) => {
+      const userId = ctx.from?.id;
+      if (userId && allowedUserIds.includes(userId.toString())) {
+        // User is allowed, continue to the next middleware
+        await next();
+      } else {
+        // User is not allowed, send an error message and do not continue
+        await ctx.reply('Sorry, you are not authorized to use this bot.');
       }
-    }
-    await next();
-  };
+    };
+    bot.use(checkUserMiddleware);
   
-  // Add the middleware function to the bot
-  bot.use(checkUrlMiddleware);
+    // Create a middleware function that checks if the user's message contains a URL
+    const checkUrlMiddleware = async (ctx: MyContext, next: () => Promise<void>) => {
+      if (ctx && ctx.chat && ctx.message && ctx.message.text) {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const urlMatches = urlRegex.exec(ctx.message.text);
+        if (urlMatches) {
+          ctx.session.url = urlMatches[0];
+          const options = new InlineKeyboard().text('Option 1', '1').text('Option 2', '2');
+          await bot.api.sendMessage(ctx.chat.id, 'Select an option:', { reply_markup: options });
+          return;
+        }
+      }
+      await next();
+    };
   
-
-
-// Handle the /start command.
-bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
-// Handle other messages.
-bot.on("message", (ctx) => ctx.reply("Got another message!"));
-
-// Now that you specified how to handle messages, you can start your bot.
-// This will connect to the Telegram servers and wait for messages.
-
-// Start the bot.
-bot.start();
+    // Add the middleware function to the bot
+    bot.use(checkUrlMiddleware);
+  
+    // Handle the callback query for the "1" button
+    bot.on('callback_query:data', async (ctx) => {
+      if (ctx.session.url) {
+        await ctx.reply(`You selected Option 1 with URL: ${ctx.session.url}`);
+        delete ctx.session.url; // Remove the URL from the session data
+      } else {
+        await ctx.reply('No URL was detected.');
+      }
+    });
+  
+    // Handle the /start command.
+    bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'));
+  
+    // Handle other messages.
+    bot.on('message', async (ctx) => {
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      if (!urlRegex.test(ctx.message?.text || '')) {
+        await ctx.reply('Got another message!');
+      }
+    });
+  
+    // Start the bot.
+    bot.start();
+  } catch (error) {
+    console.error(error);
+  }
+  
