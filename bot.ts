@@ -1,5 +1,6 @@
-import { Bot , Middleware, Context} from "grammy";
-import dotenv from 'dotenv'
+import { Bot , Middleware, Context, Keyboard, InlineKeyboard,} from "grammy";
+import dotenv from 'dotenv';
+import validUrl from 'valid-url';
 dotenv.config();
 
  
@@ -28,6 +29,41 @@ const checkUserMiddleware: Middleware<Context> = async (ctx, next) => {
     }
   };
 bot.use(checkUserMiddleware);
+
+/*
+
+// Define a command handler that sends a message with a button
+bot.command('url', async (ctx?: Context) => {
+    if (ctx && ctx.chat) { // Add a type guard to check if ctx and ctx.chat are defined
+      const replyMarkup = {
+        keyboard: [
+          [{ text: 'Enter URL', request_contact: true }]
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: true,
+      };
+      await bot.api.sendMessage(ctx.chat.id, 'Click the button to enter a URL:', {
+        reply_markup: replyMarkup
+      });
+    }
+  });
+*/
+// Define a middleware function that checks if the user's message contains a URL
+const checkUrlMiddleware = async (ctx: Context, next: () => Promise<void>) => {
+    if (ctx && ctx.chat && ctx.message && ctx.message.text) { // Add a type guard to check if ctx and its properties are defined
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      if (urlRegex.test(ctx.message.text)) {
+        const options = new InlineKeyboard().text('Option 1', '1').text('Option 2', '2');
+        await bot.api.sendMessage(ctx.chat.id, 'Select an option:', { reply_markup: options });
+      }
+    }
+    await next();
+  };
+  
+  // Add the middleware function to the bot
+  bot.use(checkUrlMiddleware);
+  
+
 
 // Handle the /start command.
 bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
