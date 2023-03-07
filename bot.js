@@ -16,7 +16,7 @@ const grammy_1 = require("grammy");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 // Define a list of authorized users
-const allowedUserIds = [process.env.carlosTelegramID];
+const allowedUserIds = [process.env.carlosTelegramID, process.env.rocioTelegramID];
 const bot = new grammy_1.Bot(process.env.TelegramToken);
 // Define the initial session value.
 function initial() {
@@ -45,8 +45,8 @@ const checkUrlMiddleware = (ctx, next) => __awaiter(void 0, void 0, void 0, func
         const urlMatches = urlRegex.exec(ctx.message.text);
         if (urlMatches) {
             ctx.session.url = urlMatches[0];
-            const options = new grammy_1.InlineKeyboard().text('Option 1', '1').text('Option 2', '2');
-            yield bot.api.sendMessage(ctx.chat.id, 'Select an option:', { reply_markup: options });
+            const options = new grammy_1.InlineKeyboard().text('Remove Paywall', '1');
+            yield bot.api.sendMessage(ctx.chat.id, 'Url detected. Click button to remove paywall:', { reply_markup: options });
             return;
         }
     }
@@ -58,8 +58,8 @@ bot.use(checkUrlMiddleware);
 bot.on('callback_query:data', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     if (ctx.session.url) {
         // Modify the URL by appending "https://12ft.io/" to it
-        const modifiedUrl = `https://12ft.io/${ctx.session.url}`;
-        yield ctx.reply(`You selected Option 1 with URL: ${modifiedUrl}`);
+        const modifiedUrl = `https://12ft.io/${ctx.session.url.replace('www', 'amp')}`;
+        yield ctx.reply(`Paywall removed. Here's the URL: ${modifiedUrl}`);
         delete ctx.session.url; // Remove the URL from the session data
     }
     else {

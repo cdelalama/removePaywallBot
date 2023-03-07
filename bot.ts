@@ -11,7 +11,7 @@ interface SessionData {
 type MyContext = Context & SessionFlavor<SessionData>;
 
 // Define a list of authorized users
-const allowedUserIds = [process.env.carlosTelegramID];
+const allowedUserIds = [process.env.carlosTelegramID, process.env.rocioTelegramID];
 
 const bot = new Bot<MyContext>(process.env.TelegramToken!);
 
@@ -43,8 +43,8 @@ const checkUrlMiddleware = async (ctx: MyContext, next: () => Promise<void>) => 
     const urlMatches = urlRegex.exec(ctx.message.text);
     if (urlMatches) {
       ctx.session.url = urlMatches[0];
-      const options = new InlineKeyboard().text('Option 1', '1').text('Option 2', '2');
-      await bot.api.sendMessage(ctx.chat.id, 'Select an option:', { reply_markup: options });
+      const options = new InlineKeyboard().text('Remove Paywall', '1');
+      await bot.api.sendMessage(ctx.chat.id, 'Url detected. Click button to remove paywall:', { reply_markup: options });
       return;
     }
   }
@@ -58,8 +58,8 @@ bot.use(checkUrlMiddleware);
 bot.on('callback_query:data', async (ctx) => {
   if (ctx.session.url) {
     // Modify the URL by appending "https://12ft.io/" to it
-    const modifiedUrl = `https://12ft.io/${ctx.session.url}`;
-    await ctx.reply(`You selected Option 1 with URL: ${modifiedUrl}`);
+    const modifiedUrl = `https://12ft.io/${ctx.session.url.replace('www', 'amp')}`;
+    await ctx.reply(`Paywall removed. Here's the URL: ${modifiedUrl}`);
     delete ctx.session.url; // Remove the URL from the session data
   } else {
     await ctx.reply('No URL was detected.');
