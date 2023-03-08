@@ -67,13 +67,13 @@ bot.on('callback_query:data', (ctx) => __awaiter(void 0, void 0, void 0, functio
     }
 }));
 // Handle the /start command.
-bot.command('start', (ctx) => ctx.reply('Welcome!! Up and running.'));
+bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'));
 // Handle other messages.
 bot.on('message', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     if (!urlRegex.test(((_b = ctx.message) === null || _b === void 0 ? void 0 : _b.text) || '')) {
-        yield ctx.reply('Got another message!!');
+        yield ctx.reply('Got another message!!!');
     }
 }));
 // Start the bot.
