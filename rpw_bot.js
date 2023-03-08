@@ -67,7 +67,7 @@ bot.on('callback_query:data', (ctx) => __awaiter(void 0, void 0, void 0, functio
     }
 }));
 // Handle the /start command.
-bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'));
+bot.command('start', (ctx) => ctx.reply('Welcome!! Up and running.'));
 // Handle other messages.
 bot.on('message', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
