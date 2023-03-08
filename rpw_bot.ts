@@ -67,13 +67,13 @@ bot.on('callback_query:data', async (ctx) => {
 });
 
 // Handle the /start command.
-bot.command('start', (ctx) => ctx.reply('Welcome!! Up and running.'));
+bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'));
 
 // Handle other messages.
 bot.on('message', async (ctx) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
   if (!urlRegex.test(ctx.message?.text || '')) {
-    await ctx.reply('Got another message!!');
+    await ctx.reply('Got another message!!!');
   }
 });
 
