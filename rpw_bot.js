@@ -16,7 +16,7 @@ const grammy_1 = require("grammy");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 // Define a list of authorized users
-const allowedUserIds = [process.env.carlosTelegramID, process.env.rocioTelegramID, process.env.rodrigoTelegramID];
+const allowedUserIds = [process.env.carlosTelegramID, process.env.rocioTelegramID, process.env.rodrigoTelegramID, process.env.eliTelegramID];
 const bot = new grammy_1.Bot(process.env.TelegramToken);
 // Define the initial session value.
 function initial() {
