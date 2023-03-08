@@ -78,4 +78,5 @@ bot.on('message', async (ctx) => {
 });
 
 // Start the bot.
+bot.api.deleteWebhook();
 bot.start();
