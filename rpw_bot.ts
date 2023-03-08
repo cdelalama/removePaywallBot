@@ -11,7 +11,7 @@ interface SessionData {
 type MyContext = Context & SessionFlavor<SessionData>;
 
 // Define a list of authorized users
-const allowedUserIds = [process.env.carlosTelegramID, process.env.rocioTelegramID];
+const allowedUserIds = [process.env.carlosTelegramID, process.env.rocioTelegramID, process.env.rodrigoTelegramID];
 
 const bot = new Bot<MyContext>(process.env.TelegramToken!);
 
