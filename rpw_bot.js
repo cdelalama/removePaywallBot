@@ -77,4 +77,5 @@ bot.on('message', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     }
 }));
 // Start the bot.
+bot.api.deleteWebhook();
 bot.start();
