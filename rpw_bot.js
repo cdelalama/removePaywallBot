@@ -14,9 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const grammy_1 = require("grammy");
 const dotenv_1 = __importDefault(require("dotenv"));
+const checkUser_1 = require("./middleware/checkUser");
+const checkUrl_1 = require("./middleware/checkUrl");
 dotenv_1.default.config();
-// Define a list of authorized users
-const allowedUserIds = [process.env.carlosTelegramID, process.env.rocioTelegramID, process.env.rodrigoTelegramID];
 const bot = new grammy_1.Bot(process.env.TelegramToken);
 // Define the initial session value.
 function initial() {
@@ -24,36 +24,8 @@ function initial() {
 }
 // Install session middleware with the initial session value.
 bot.use((0, grammy_1.session)({ initial }));
-// Create a middleware function that checks if the user ID is in the allowed list
-const checkUserMiddleware = (ctx, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const userId = (_a = ctx.from) === null || _a === void 0 ? void 0 : _a.id;
-    if (userId && allowedUserIds.includes(userId.toString())) {
-        // User is allowed, continue to the next middleware
-        yield next();
-    }
-    else {
-        // User is not allowed, send an error message and do not continue
-        yield ctx.reply('Sorry, you are not authorized to use this bot.');
-    }
-});
-bot.use(checkUserMiddleware);
-// Create a middleware function that checks if the user's message contains a URL
-const checkUrlMiddleware = (ctx, next) => __awaiter(void 0, void 0, void 0, function* () {
-    if (ctx && ctx.chat && ctx.message && ctx.message.text) {
-        const urlRegex = /(https?:\/\/[^\s]+)/g;
-        const urlMatches = urlRegex.exec(ctx.message.text);
-        if (urlMatches) {
-            ctx.session.url = urlMatches[0];
-            const options = new grammy_1.InlineKeyboard().text('Remove Paywall', '1');
-            yield bot.api.sendMessage(ctx.chat.id, 'Url detected. Click button to remove paywall:', { reply_markup: options });
-            return;
-        }
-    }
-    yield next();
-});
-// Add the middleware function to the bot
-bot.use(checkUrlMiddleware);
+bot.use(checkUser_1.checkUserMiddleware);
+bot.use(checkUrl_1.checkUrlMiddleware);
 // Handle the callback query for the "1" button
 bot.on('callback_query:data', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     if (ctx.session.url) {
@@ -70,9 +42,9 @@ bot.on('callback_query:data', (ctx) => __awaiter(void 0, void 0, void 0, functio
 bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'));
 // Handle other messages.
 bot.on('message', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
+    var _a;
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-    if (!urlRegex.test(((_b = ctx.message) === null || _b === void 0 ? void 0 : _b.text) || '')) {
+    if (!urlRegex.test(((_a = ctx.message) === null || _a === void 0 ? void 0 : _a.text) || '')) {
         yield ctx.reply('Got another message!!!');
     }
 }));

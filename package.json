@@ -11,9 +11,25 @@
   },
   "dependencies": {
     "dotenv": "^16.0.3",
+    "firebase": "^9.17.2",
+    "firebase-admin": "^11.5.0",
     "grammy": "^1.14.1",
     "grammy-scenes": "^7.3.0",
     "nodemon": "^2.0.21",
     "valid-url": "^1.0.9"
-  }
+  },
+  "name": "removepaywallbot",
+  "version": "1.0.0",
+  "main": "rpw_bot.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cdelalama/removePaywallBot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cdelalama/removePaywallBot/issues"
+  },
+  "homepage": "https://github.com/cdelalama/removePaywallBot#readme",
+  "description": ""
 }

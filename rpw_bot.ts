@@ -1,17 +1,10 @@
 import { Bot, Middleware, Context, InlineKeyboard, session, SessionFlavor } from 'grammy';
 import dotenv from 'dotenv';
+import { MyContext, SessionData } from './types';
+import { checkUserMiddleware } from './middleware/checkUser';
+import { checkUrlMiddleware } from './middleware/checkUrl';
+
 dotenv.config();
-
-// Define the shape of our session.
-interface SessionData {
-  url?: string;
-}
-
-// Flavor the context type to include sessions.
-type MyContext = Context & SessionFlavor<SessionData>;
-
-// Define a list of authorized users
-const allowedUserIds = [process.env.carlosTelegramID, process.env.rocioTelegramID, process.env.rodrigoTelegramID];
 
 const bot = new Bot<MyContext>(process.env.TelegramToken!);
 
@@ -22,36 +15,7 @@ function initial(): SessionData {
 
 // Install session middleware with the initial session value.
 bot.use(session({ initial }));
-
-// Create a middleware function that checks if the user ID is in the allowed list
-const checkUserMiddleware: Middleware<Context> = async (ctx, next) => {
-  const userId = ctx.from?.id;
-  if (userId && allowedUserIds.includes(userId.toString())) {
-    // User is allowed, continue to the next middleware
-    await next();
-  } else {
-    // User is not allowed, send an error message and do not continue
-    await ctx.reply('Sorry, you are not authorized to use this bot.');
-  }
-};
 bot.use(checkUserMiddleware);
-
-// Create a middleware function that checks if the user's message contains a URL
-const checkUrlMiddleware = async (ctx: MyContext, next: () => Promise<void>) => {
-  if (ctx && ctx.chat && ctx.message && ctx.message.text) {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const urlMatches = urlRegex.exec(ctx.message.text);
-    if (urlMatches) {
-      ctx.session.url = urlMatches[0];
-      const options = new InlineKeyboard().text('Remove Paywall', '1');
-      await bot.api.sendMessage(ctx.chat.id, 'Url detected. Click button to remove paywall:', { reply_markup: options });
-      return;
-    }
-  }
-  await next();
-};
-
-// Add the middleware function to the bot
 bot.use(checkUrlMiddleware);
 
 // Handle the callback query for the "1" button
