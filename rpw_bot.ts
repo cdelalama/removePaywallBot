@@ -1,4 +1,4 @@
-import { Bot, Middleware, Context, InlineKeyboard, session, SessionFlavor } from 'grammy';
+import { Bot, session } from 'grammy';
 import dotenv from 'dotenv';
 import { MyContext, SessionData } from './types/types';
 import { checkUserMiddleware } from './middleware/checkUser';
@@ -7,10 +7,6 @@ import { addUserCommand } from './commands/addUser';
 import authorizeShareMiddleware from './middleware/authorizeShare'; 
 import { statsCommand } from './commands/stats';
 import { helpMiddleware } from './commands/help';
-
-
-//import { statsCommand } from './commands/stats';
-
 import { deleteUserCommand } from './commands/deleteUser';
 
 dotenv.config();

@@ -20,6 +20,7 @@ exports.helpCommand = {
             { name: addUser_1.addUserCommand.command, isAdmin: true },
             { name: stats_1.statsCommand.command, isAdmin: true },
             { name: deleteUser_1.deleteUserCommand.command, isAdmin: true },
+            { name: exports.helpCommand.command, isAdmin: false },
             // add more commands as needed
         ];
         const message = commands.reduce((acc, command) => {

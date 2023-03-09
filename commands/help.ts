@@ -1,7 +1,6 @@
 import { Middleware } from 'grammy';
 import { MyContext } from '../types/types';
 import { addUserCommand } from './addUser';
-import { isAdmin } from '../utils/utils';
 import { statsCommand } from './stats';
 import { deleteUserCommand } from './deleteUser';
 
@@ -12,6 +11,7 @@ export const helpCommand = {
       { name: addUserCommand.command, isAdmin: true },
       { name: statsCommand.command, isAdmin: true },
       { name: deleteUserCommand.command, isAdmin: true },
+      { name: helpCommand.command, isAdmin: false },
       // add more commands as needed
     ];
 

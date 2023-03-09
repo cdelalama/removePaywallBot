@@ -20,7 +20,6 @@ const addUser_1 = require("./commands/addUser");
 const authorizeShare_1 = __importDefault(require("./middleware/authorizeShare"));
 const stats_1 = require("./commands/stats");
 const help_1 = require("./commands/help");
-//import { statsCommand } from './commands/stats';
 const deleteUser_1 = require("./commands/deleteUser");
 dotenv_1.default.config();
 const bot = new grammy_1.Bot(process.env.TelegramToken);
