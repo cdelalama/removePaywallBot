@@ -23,23 +23,39 @@ const deleteUserMiddleware = (ctx, next) => __awaiter(void 0, void 0, void 0, fu
         const messageText = ((_b = ctx.message) === null || _b === void 0 ? void 0 : _b.text) || '';
         const args = messageText.split(' ');
         if (args.length < 2) {
-            yield ctx.reply('Please provide a Telegram username as a parameter.');
+            yield ctx.reply('Please provide a Telegram username or ID as a parameter.');
             return;
         }
-        const telegramUsername = args[1];
+        const input = args[1];
         try {
-            const query = backendless_1.default.DataQueryBuilder.create().setWhereClause(`telegramUsername='${telegramUsername}'`);
-            const result = yield backendless_1.default.Data.of('rpw_users').find(query);
-            if (result.length === 0) {
-                throw new Error(`User ${telegramUsername} not found in "rpw_users" table`);
+            let rpwUser = null;
+            // Try to find the user by ID
+            if (/^\d+$/.test(input)) {
+                const telegramId = input;
+                const query = backendless_1.default.DataQueryBuilder.create().setWhereClause(`telegramId='${telegramId}'`);
+                const result = yield backendless_1.default.Data.of('rpw_users').find(query);
+                if (result.length > 0) {
+                    rpwUser = result[0];
+                }
             }
-            const rpwUser = result[0];
+            // If user not found by ID, try to find by username
+            if (!rpwUser) {
+                const telegramUsername = input;
+                const query = backendless_1.default.DataQueryBuilder.create().setWhereClause(`telegramUsername='${telegramUsername}'`);
+                const result = yield backendless_1.default.Data.of('rpw_users').find(query);
+                if (result.length > 0) {
+                    rpwUser = result[0];
+                }
+            }
+            if (!rpwUser) {
+                throw new Error(`User ${input} not found in "rpw_users" table`);
+            }
             yield backendless_1.default.Data.of('rpw_users').remove(rpwUser);
-            yield ctx.reply(`User ${telegramUsername} (ID: ${rpwUser.telegramId}) has been deleted from the "rpw_users" table.`);
+            yield ctx.reply(`User ${rpwUser.telegramUsername || 'Unknown User'} (ID: ${rpwUser.telegramId}) has been deleted from the "rpw_users" table.`);
         }
         catch (error) {
             console.error(`Error deleting user: ${error}`);
-            yield ctx.reply(`Sorry, there was an error deleting user ${telegramUsername}.`);
+            yield ctx.reply(`Sorry, there was an error deleting user ${input}.`);
         }
     }
     yield next();
