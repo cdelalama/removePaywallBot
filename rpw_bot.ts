@@ -5,7 +5,10 @@ import { checkUserMiddleware } from './middleware/checkUser';
 import { checkUrlMiddleware } from './middleware/checkUrl';
 import { addUserCommand } from './commands/addUser';
 import authorizeShareMiddleware from './middleware/authorizeShare'; 
-import { statsMiddleware } from './commands/stats';
+import { statsCommand } from './commands/stats';
+import { helpMiddleware } from './commands/help';
+
+
 //import { statsCommand } from './commands/stats';
 
 import { deleteUserCommand } from './commands/deleteUser';
@@ -24,7 +27,8 @@ bot.use(session({ initial }));
 bot.use(checkUserMiddleware);
 bot.use(checkUrlMiddleware);
 bot.use(authorizeShareMiddleware); 
-bot.command(deleteUserCommand.command, deleteUserCommand.handler);
+bot.use(helpMiddleware);
+
 
 
 
@@ -44,7 +48,9 @@ bot.on('callback_query:data', async (ctx) => {
 // Handle the /start command.
 bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'));
 bot.command(addUserCommand.command, addUserCommand.handler);
-bot.command('stats', statsMiddleware);
+bot.command(statsCommand.command, statsCommand.handler);
+bot.command(deleteUserCommand.command, deleteUserCommand.handler);
+
 
 
 // Start the bot.

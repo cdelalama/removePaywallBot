@@ -19,6 +19,7 @@ const checkUrl_1 = require("./middleware/checkUrl");
 const addUser_1 = require("./commands/addUser");
 const authorizeShare_1 = __importDefault(require("./middleware/authorizeShare"));
 const stats_1 = require("./commands/stats");
+const help_1 = require("./commands/help");
 //import { statsCommand } from './commands/stats';
 const deleteUser_1 = require("./commands/deleteUser");
 dotenv_1.default.config();
@@ -32,7 +33,7 @@ bot.use((0, grammy_1.session)({ initial }));
 bot.use(checkUser_1.checkUserMiddleware);
 bot.use(checkUrl_1.checkUrlMiddleware);
 bot.use(authorizeShare_1.default);
-bot.command(deleteUser_1.deleteUserCommand.command, deleteUser_1.deleteUserCommand.handler);
+bot.use(help_1.helpMiddleware);
 // Handle the callback query for the "1" button
 bot.on('callback_query:data', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     if (ctx.session.url) {
@@ -48,7 +49,8 @@ bot.on('callback_query:data', (ctx) => __awaiter(void 0, void 0, void 0, functio
 // Handle the /start command.
 bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'));
 bot.command(addUser_1.addUserCommand.command, addUser_1.addUserCommand.handler);
-bot.command('stats', stats_1.statsMiddleware);
+bot.command(stats_1.statsCommand.command, stats_1.statsCommand.handler);
+bot.command(deleteUser_1.deleteUserCommand.command, deleteUser_1.deleteUserCommand.handler);
 // Start the bot.
 bot.api.deleteWebhook();
 bot.start();
