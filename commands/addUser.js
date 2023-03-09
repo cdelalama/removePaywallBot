@@ -12,10 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addUserCommand = exports.getUserIdFromUsername = void 0;
+exports.addUserCommand = void 0;
 const backendless_1 = __importDefault(require("backendless"));
-const grammy_1 = require("grammy"); //import { Chat } from 'grammy';
-//import { GrammyError } from '@grammyjs/errors';
 // Initialize Backendless
 backendless_1.default.initApp(process.env.BackendlessAppId, process.env.BackendlessApiKey);
 // Define the "rpw_users" table in Backendless
@@ -41,12 +39,10 @@ function getUserIdFromUsername(ctx, username) {
         }
     });
 }
-exports.getUserIdFromUsername = getUserIdFromUsername;
-const bot = new grammy_1.Bot(process.env.TelegramToken);
-function getUsernameById(id) {
+function getUsernameById(ctx, id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const chat = yield bot.api.getChat(id);
+            const chat = yield ctx.api.getChat(id);
             if (chat.type === 'private') {
                 return chat.username;
             }
@@ -55,12 +51,7 @@ function getUsernameById(id) {
             }
         }
         catch (error) {
-            if (error instanceof grammy_1.GrammyError) {
-                console.log(`Failed to get chat: ${error.description}`);
-            }
-            else {
-                console.log(`Failed to get chat: ${error}`);
-            }
+            console.log(`Failed to get chat: ${error}`);
         }
     });
 }
@@ -73,14 +64,12 @@ exports.addUserCommand = {
         const args = messageText.split(' ');
         if (args.length < 2) {
             yield ctx.reply('Please provide a Telegram username as a parameter.');
-            //const username = await getUsernameById(165997059)
-            //console.log(`Username: ${username}`)
             return;
         }
         const telegramUsername = args[1];
         try {
             const telegramId = yield getUserIdFromUsername(ctx, telegramUsername);
-            const username = yield getUsernameById(parseInt(telegramId));
+            const username = yield getUsernameById(ctx, parseInt(telegramId));
             const rpwUser = {
                 telegramId: telegramId,
                 telegramUsername: username,
