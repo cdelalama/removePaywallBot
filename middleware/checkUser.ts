@@ -1,17 +1,36 @@
 import { Middleware } from 'grammy';
+import Backendless from 'backendless';
 import dotenv from 'dotenv';
+import { MyContext } from '../types';
+
 dotenv.config();
 
-// Define a list of authorized users
-const allowedUserIds = [process.env.carlosTelegramID, process.env.rocioTelegramID, process.env.rodrigoTelegramID, process.env.eliTelegramID];
+// Initialize Backendless
+Backendless.initApp(process.env.BackendlessAppId!, process.env.BackendlessApiKey!);
 
-export const checkUserMiddleware: Middleware = async (ctx, next) => {
-  const userId = ctx.from?.id;
-  if (userId && allowedUserIds.includes(userId.toString())) {
-    // User is allowed, continue to the next middleware
+// Define a middleware to check if the user is authorized to use the bot
+export const checkUserMiddleware: Middleware<MyContext> = async (ctx, next) => {
+  try {
+    // Get the user ID from the context
+    const userId = ctx.from?.id?.toString();
+    if (!userId) {
+      throw new Error('User ID not found in context');
+    }
+
+    // Query the 'rpw_users' table in Backendless to check if the user is authorized
+    const query = Backendless.DataQueryBuilder.create().setWhereClause(`telegramId='${userId}'`);
+    const result = await Backendless.Data.of('rpw_users').find(query);
+
+    if (result.length === 0) {
+      // User is not authorized, send an error message and do not continue
+      await ctx.reply('Sorry, you are not authorized to use this bot.');
+      return;
+    }
+
+    // User is authorized, continue to the next middleware
     await next();
-  } else {
-    // User is not allowed, send an error message and do not continue
-    await ctx.reply('Sorry, you are not authorized to use this bot.');
+  } catch (error) {
+    console.error(`Error checking user: ${error}`);
+    await ctx.reply('Sorry, there was an error checking your authorization.');
   }
 };

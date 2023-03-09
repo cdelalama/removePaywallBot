@@ -7,11 +7,12 @@ import { Bot, GrammyError } from 'grammy'//import { Chat } from 'grammy';
 
 
 
+
 // Initialize Backendless
 Backendless.initApp(process.env.BackendlessAppId!, process.env.BackendlessApiKey!);
 
 // Define the "rpw_users" table in Backendless
-const rpwUsersTable = Backendless.Data.of('rpw_users');
+export const rpwUsersTable = Backendless.Data.of('rpw_users');
 
 export async function getUserIdFromUsername(ctx: MyContext, username: string): Promise<string> {
     try {
@@ -46,6 +47,8 @@ export async function getUserIdFromUsername(ctx: MyContext, username: string): P
       }
     }
   }
+
+  
 // Define the "adduser" command
 export const addUserCommand = {
     command: 'adduser',

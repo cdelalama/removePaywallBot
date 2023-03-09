@@ -13,20 +13,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkUserMiddleware = void 0;
+const backendless_1 = __importDefault(require("backendless"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-// Define a list of authorized users
-const allowedUserIds = [process.env.carlosTelegramID, process.env.rocioTelegramID, process.env.rodrigoTelegramID, process.env.eliTelegramID];
+// Initialize Backendless
+backendless_1.default.initApp(process.env.BackendlessAppId, process.env.BackendlessApiKey);
+// Define a middleware to check if the user is authorized to use the bot
 const checkUserMiddleware = (ctx, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const userId = (_a = ctx.from) === null || _a === void 0 ? void 0 : _a.id;
-    if (userId && allowedUserIds.includes(userId.toString())) {
-        // User is allowed, continue to the next middleware
+    var _a, _b;
+    try {
+        // Get the user ID from the context
+        const userId = (_b = (_a = ctx.from) === null || _a === void 0 ? void 0 : _a.id) === null || _b === void 0 ? void 0 : _b.toString();
+        if (!userId) {
+            throw new Error('User ID not found in context');
+        }
+        // Query the 'rpw_users' table in Backendless to check if the user is authorized
+        const query = backendless_1.default.DataQueryBuilder.create().setWhereClause(`telegramId='${userId}'`);
+        const result = yield backendless_1.default.Data.of('rpw_users').find(query);
+        if (result.length === 0) {
+            // User is not authorized, send an error message and do not continue
+            yield ctx.reply('Sorry, you are not authorized to use this bot.');
+            return;
+        }
+        // User is authorized, continue to the next middleware
         yield next();
     }
-    else {
-        // User is not allowed, send an error message and do not continue
-        yield ctx.reply('Sorry, you are not authorized to use this bot.');
+    catch (error) {
+        console.error(`Error checking user: ${error}`);
+        yield ctx.reply('Sorry, there was an error checking your authorization.');
     }
 });
 exports.checkUserMiddleware = checkUserMiddleware;

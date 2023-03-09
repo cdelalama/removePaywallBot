@@ -12,14 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addUserCommand = exports.getUserIdFromUsername = void 0;
+exports.addUserCommand = exports.getUserIdFromUsername = exports.rpwUsersTable = void 0;
 const backendless_1 = __importDefault(require("backendless"));
 const grammy_1 = require("grammy"); //import { Chat } from 'grammy';
 //import { GrammyError } from '@grammyjs/errors';
 // Initialize Backendless
 backendless_1.default.initApp(process.env.BackendlessAppId, process.env.BackendlessApiKey);
 // Define the "rpw_users" table in Backendless
-const rpwUsersTable = backendless_1.default.Data.of('rpw_users');
+exports.rpwUsersTable = backendless_1.default.Data.of('rpw_users');
 function getUserIdFromUsername(ctx, username) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -85,7 +85,7 @@ exports.addUserCommand = {
                 telegramId: telegramId,
                 telegramUsername: username,
             };
-            yield rpwUsersTable.save(rpwUser);
+            yield exports.rpwUsersTable.save(rpwUser);
             yield ctx.reply(`User ${telegramUsername} (ID: ${telegramId}) added to the "rpw_users" table.`);
         }
         catch (e) {
