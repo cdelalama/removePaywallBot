@@ -13,11 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const backendless_1 = __importDefault(require("backendless"));
+const utils_1 = require("../utils/utils");
 // Initialize Backendless
 backendless_1.default.initApp(process.env.BackendlessAppId, process.env.BackendlessApiKey);
 const authorizeShareMiddleware = (ctx, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b, _c, _d;
-    const isAuthorized = ((_a = ctx.from) === null || _a === void 0 ? void 0 : _a.username) === 'cdelalama'; // Only allow authorized user to share messages
+    const isAuthorized = yield (0, utils_1.isAdmin)((_a = ctx.from) === null || _a === void 0 ? void 0 : _a.id); // Check if user is authorized
     const isForwarded = !!((_b = ctx.message) === null || _b === void 0 ? void 0 : _b.forward_from); // Check if the message is a forwarded message
     if (isAuthorized && isForwarded) {
         const forwardedFrom = (_c = ctx.message) === null || _c === void 0 ? void 0 : _c.forward_from;
