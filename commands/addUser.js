@@ -12,12 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addUserCommand = void 0;
+exports.addUserCommand = exports.rpwUsersTable = void 0;
 const backendless_1 = __importDefault(require("backendless"));
 // Initialize Backendless
 backendless_1.default.initApp(process.env.BackendlessAppId, process.env.BackendlessApiKey);
 // Define the "rpw_users" table in Backendless
-const rpwUsersTable = backendless_1.default.Data.of('rpw_users');
+exports.rpwUsersTable = backendless_1.default.Data.of('rpw_users');
 function getUserIdFromUsername(ctx, username) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -55,7 +55,6 @@ function getUsernameById(ctx, id) {
         }
     });
 }
-// Define the "adduser" command
 exports.addUserCommand = {
     command: 'adduser',
     handler: (ctx) => __awaiter(void 0, void 0, void 0, function* () {
@@ -74,7 +73,7 @@ exports.addUserCommand = {
                 telegramId: telegramId,
                 telegramUsername: username,
             };
-            yield rpwUsersTable.save(rpwUser);
+            yield exports.rpwUsersTable.save(rpwUser);
             yield ctx.reply(`User ${telegramUsername} (ID: ${telegramId}) added to the "rpw_users" table.`);
         }
         catch (e) {

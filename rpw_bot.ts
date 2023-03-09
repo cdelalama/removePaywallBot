@@ -4,6 +4,8 @@ import { MyContext, SessionData } from './types';
 import { checkUserMiddleware } from './middleware/checkUser';
 import { checkUrlMiddleware } from './middleware/checkUrl';
 import { addUserCommand } from './commands/addUser';
+import authorizeShareMiddleware from './middleware/authorizeShare'; // Import the new middleware function
+
 
 
 dotenv.config();
@@ -19,6 +21,8 @@ function initial(): SessionData {
 bot.use(session({ initial }));
 bot.use(checkUserMiddleware);
 bot.use(checkUrlMiddleware);
+bot.use(authorizeShareMiddleware); 
+
 
 // Handle the callback query for the "1" button
 bot.on('callback_query:data', async (ctx) => {
