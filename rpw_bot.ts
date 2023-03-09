@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import { MyContext, SessionData } from './types';
 import { checkUserMiddleware } from './middleware/checkUser';
 import { checkUrlMiddleware } from './middleware/checkUrl';
+import { addUserCommand } from './commands/addUser';
+
 
 dotenv.config();
 
@@ -32,7 +34,7 @@ bot.on('callback_query:data', async (ctx) => {
 
 // Handle the /start command.
 bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'));
-
+/*
 // Handle other messages.
 bot.on('message', async (ctx) => {
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -40,6 +42,9 @@ bot.on('message', async (ctx) => {
     await ctx.reply('Got another message!!!');
   }
 });
+*/
+
+bot.command(addUserCommand.command, addUserCommand.handler);
 
 // Start the bot.
 bot.api.deleteWebhook();

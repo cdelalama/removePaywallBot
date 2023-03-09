@@ -16,6 +16,7 @@ const grammy_1 = require("grammy");
 const dotenv_1 = __importDefault(require("dotenv"));
 const checkUser_1 = require("./middleware/checkUser");
 const checkUrl_1 = require("./middleware/checkUrl");
+const addUser_1 = require("./commands/addUser");
 dotenv_1.default.config();
 const bot = new grammy_1.Bot(process.env.TelegramToken);
 // Define the initial session value.
@@ -40,14 +41,16 @@ bot.on('callback_query:data', (ctx) => __awaiter(void 0, void 0, void 0, functio
 }));
 // Handle the /start command.
 bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'));
+/*
 // Handle other messages.
-bot.on('message', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    if (!urlRegex.test(((_a = ctx.message) === null || _a === void 0 ? void 0 : _a.text) || '')) {
-        yield ctx.reply('Got another message!!!');
-    }
-}));
+bot.on('message', async (ctx) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  if (!urlRegex.test(ctx.message?.text || '')) {
+    await ctx.reply('Got another message!!!');
+  }
+});
+*/
+bot.command(addUser_1.addUserCommand.command, addUser_1.addUserCommand.handler);
 // Start the bot.
 bot.api.deleteWebhook();
 bot.start();
