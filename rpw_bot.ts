@@ -6,6 +6,7 @@ import { checkUrlMiddleware } from './middleware/checkUrl';
 import { addUserCommand } from './commands/addUser';
 import authorizeShareMiddleware from './middleware/authorizeShare'; 
 import { statsMiddleware } from './commands/stats';
+import { deleteUserMiddleware } from './commands/deleteUser';
 
 
 
@@ -23,6 +24,7 @@ bot.use(session({ initial }));
 bot.use(checkUserMiddleware);
 bot.use(checkUrlMiddleware);
 bot.use(authorizeShareMiddleware); 
+bot.use(deleteUserMiddleware);
 
 
 // Handle the callback query for the "1" button
