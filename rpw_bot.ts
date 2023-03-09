@@ -6,9 +6,9 @@ import { checkUrlMiddleware } from './middleware/checkUrl';
 import { addUserCommand } from './commands/addUser';
 import authorizeShareMiddleware from './middleware/authorizeShare'; 
 import { statsMiddleware } from './commands/stats';
-import { deleteUserMiddleware } from './commands/deleteUser';
+//import { statsCommand } from './commands/stats';
 
-
+import { deleteUserCommand } from './commands/deleteUser';
 
 dotenv.config();
 
@@ -24,7 +24,9 @@ bot.use(session({ initial }));
 bot.use(checkUserMiddleware);
 bot.use(checkUrlMiddleware);
 bot.use(authorizeShareMiddleware); 
-bot.use(deleteUserMiddleware);
+bot.command(deleteUserCommand.command, deleteUserCommand.handler);
+
+
 
 
 // Handle the callback query for the "1" button
@@ -43,6 +45,8 @@ bot.on('callback_query:data', async (ctx) => {
 bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'));
 bot.command(addUserCommand.command, addUserCommand.handler);
 bot.command('stats', statsMiddleware);
+
+
 // Start the bot.
 bot.api.deleteWebhook();
 bot.start();
