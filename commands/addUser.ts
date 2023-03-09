@@ -1,10 +1,7 @@
 import Backendless from 'backendless';
-import dotenv from 'dotenv';
 import { MyContext } from '../types/types';
-import { Bot, GrammyError } from 'grammy'//import { Chat } from 'grammy';
-//import { GrammyError } from '@grammyjs/errors';
-
-
+import { Bot, GrammyError } from 'grammy';
+import { RpwUser } from '../types/types';
 
 
 
@@ -41,7 +38,7 @@ export async function getUserIdFromUsername(ctx: MyContext, username: string): P
       }
     } catch (error) {
       if (error instanceof GrammyError) {
-        console.log(`Failed to get chat: ${error.description}`)
+        console.log(`Failed to get chat: ${(error as any).description}`);
       } else {
         console.log(`Failed to get chat: ${error}`)
       }
@@ -63,17 +60,19 @@ export const addUserCommand = {
       try {
         const telegramId = await getUserIdFromUsername(ctx, telegramUsername);
         const username = await getUsernameById(parseInt(telegramId))
-        const rpwUser = {
+        const rpwUser: RpwUser = {
           telegramId: telegramId,
-          telegramUsername: username,
+          telegramUsername: username || '', // provide a default value
+          number_calls: 0,
+          isAdmin: false,
         };
-
+        
 
         await rpwUsersTable.save(rpwUser);
         await ctx.reply(`User ${telegramUsername} (ID: ${telegramId}) added to the "rpw_users" table.`);
       } catch (e) {
         console.error(`Error adding user: ${e}`);
-        await ctx.reply('Sorry, there was an error adding the user.');
+        await ctx.reply(`Sorry, there was an error adding the user: ${e}`);
       }
     },
   };

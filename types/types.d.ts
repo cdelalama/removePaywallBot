@@ -6,7 +6,8 @@ export interface SessionData {
   export interface RpwUser {
     objectId?: string;
     telegramId: string;
-    telegramUsername: string;
+    telegramUsername?: string;
     number_calls: number;
     isAdmin: boolean;
   }
+
