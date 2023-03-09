@@ -73,8 +73,8 @@ exports.addUserCommand = {
         const args = messageText.split(' ');
         if (args.length < 2) {
             yield ctx.reply('Please provide a Telegram username as a parameter.');
-            const username = yield getUsernameById(165997059);
-            console.log(`Username: ${username}`);
+            //const username = await getUsernameById(165997059)
+            //console.log(`Username: ${username}`)
             return;
         }
         const telegramUsername = args[1];
