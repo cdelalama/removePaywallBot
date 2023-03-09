@@ -1,6 +1,6 @@
 import Backendless from 'backendless';
 import dotenv from 'dotenv';
-import { MyContext } from '../types';
+import { MyContext } from '../types/types';
 import { Bot, GrammyError } from 'grammy'//import { Chat } from 'grammy';
 //import { GrammyError } from '@grammyjs/errors';
 

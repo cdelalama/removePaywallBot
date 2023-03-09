@@ -8,4 +8,5 @@ export interface SessionData {
     telegramId: string;
     telegramUsername: string;
     number_calls: number;
+    isAdmin: boolean;
   }

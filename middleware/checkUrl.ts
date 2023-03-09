@@ -1,9 +1,9 @@
 import { Middleware, InlineKeyboard, SessionFlavor } from 'grammy';
-import { MyContext, SessionData } from '../types';
+import { MyContext, SessionData } from '../types/types';
 import { rpwUsersTable } from '../commands/addUser';
 import Backendless from 'backendless';
 import dotenv from 'dotenv';
-import { RpwUser } from '../types';
+import { RpwUser } from '../types/types';
 
 dotenv.config();
 Backendless.initApp(process.env.BackendlessAppId!, process.env.BackendlessApiKey!);

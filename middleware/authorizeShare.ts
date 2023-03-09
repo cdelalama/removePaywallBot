@@ -1,6 +1,6 @@
 import { Middleware } from 'grammy';
 import Backendless from 'backendless';
-import { MyContext } from '../types';
+import { MyContext } from '../types/types';
 
 // Initialize Backendless
 Backendless.initApp(process.env.BackendlessAppId!, process.env.BackendlessApiKey!);

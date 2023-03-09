@@ -1,7 +1,7 @@
 import { Middleware } from 'grammy';
 import Backendless from 'backendless';
 import dotenv from 'dotenv';
-import { MyContext } from '../types';
+import { MyContext } from '../types/types';
 
 dotenv.config();
 
