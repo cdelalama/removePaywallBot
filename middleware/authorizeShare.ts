@@ -1,12 +1,14 @@
 import { Middleware } from 'grammy';
 import Backendless from 'backendless';
-import { MyContext } from '../types';
+import { MyContext } from '../types/types';
+import { isAdmin } from '../utils/utils';
+
 
 // Initialize Backendless
 Backendless.initApp(process.env.BackendlessAppId!, process.env.BackendlessApiKey!);
 
 const authorizeShareMiddleware: Middleware<MyContext> = async (ctx, next) => {
-  const isAuthorized = ctx.from?.username === 'cdelalama'; // Only allow authorized user to share messages
+  const isAuthorized = await isAdmin(ctx.from?.id); // Check if user is authorized
   const isForwarded = !!ctx.message?.forward_from; // Check if the message is a forwarded message
 
   if (isAuthorized && isForwarded) {

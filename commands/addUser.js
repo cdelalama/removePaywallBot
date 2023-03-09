@@ -14,8 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addUserCommand = exports.getUserIdFromUsername = exports.rpwUsersTable = void 0;
 const backendless_1 = __importDefault(require("backendless"));
-const grammy_1 = require("grammy"); //import { Chat } from 'grammy';
-//import { GrammyError } from '@grammyjs/errors';
+const grammy_1 = require("grammy");
 // Initialize Backendless
 backendless_1.default.initApp(process.env.BackendlessAppId, process.env.BackendlessApiKey);
 // Define the "rpw_users" table in Backendless
@@ -73,8 +72,6 @@ exports.addUserCommand = {
         const args = messageText.split(' ');
         if (args.length < 2) {
             yield ctx.reply('Please provide a Telegram username as a parameter.');
-            //const username = await getUsernameById(165997059)
-            //console.log(`Username: ${username}`)
             return;
         }
         const telegramUsername = args[1];
@@ -83,14 +80,16 @@ exports.addUserCommand = {
             const username = yield getUsernameById(parseInt(telegramId));
             const rpwUser = {
                 telegramId: telegramId,
-                telegramUsername: username,
+                telegramUsername: username || '',
+                number_calls: 0,
+                isAdmin: false,
             };
             yield exports.rpwUsersTable.save(rpwUser);
             yield ctx.reply(`User ${telegramUsername} (ID: ${telegramId}) added to the "rpw_users" table.`);
         }
         catch (e) {
             console.error(`Error adding user: ${e}`);
-            yield ctx.reply('Sorry, there was an error adding the user.');
+            yield ctx.reply(`Sorry, there was an error adding the user: ${e}`);
         }
     }),
 };

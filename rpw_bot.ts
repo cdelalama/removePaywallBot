@@ -1,12 +1,14 @@
 import { Bot, Middleware, Context, InlineKeyboard, session, SessionFlavor } from 'grammy';
 import dotenv from 'dotenv';
-import { MyContext, SessionData } from './types';
+import { MyContext, SessionData } from './types/types';
 import { checkUserMiddleware } from './middleware/checkUser';
 import { checkUrlMiddleware } from './middleware/checkUrl';
 import { addUserCommand } from './commands/addUser';
-import authorizeShareMiddleware from './middleware/authorizeShare'; // Import the new middleware function
+import authorizeShareMiddleware from './middleware/authorizeShare'; 
+import { statsMiddleware } from './commands/stats';
+//import { statsCommand } from './commands/stats';
 
-
+import { deleteUserCommand } from './commands/deleteUser';
 
 dotenv.config();
 
@@ -22,6 +24,9 @@ bot.use(session({ initial }));
 bot.use(checkUserMiddleware);
 bot.use(checkUrlMiddleware);
 bot.use(authorizeShareMiddleware); 
+bot.command(deleteUserCommand.command, deleteUserCommand.handler);
+
+
 
 
 // Handle the callback query for the "1" button
@@ -38,17 +43,9 @@ bot.on('callback_query:data', async (ctx) => {
 
 // Handle the /start command.
 bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'));
-/*
-// Handle other messages.
-bot.on('message', async (ctx) => {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  if (!urlRegex.test(ctx.message?.text || '')) {
-    await ctx.reply('Got another message!!!');
-  }
-});
-*/
-
 bot.command(addUserCommand.command, addUserCommand.handler);
+bot.command('stats', statsMiddleware);
+
 
 // Start the bot.
 bot.api.deleteWebhook();
