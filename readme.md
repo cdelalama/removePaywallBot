@@ -5,7 +5,6 @@ This is a Telegram bot that removes paywalls from articles posted by users. It w
 ## Features
 
 - Detects URLs in messages sent to the bot
-- Uses Puppeteer to retrieve the content of the URL
 - Attempts to remove paywalls from the content
 - Sends the content of the article back to the user
 - Maintains a count of the number of times a user has called the bot
@@ -41,8 +40,7 @@ This is a Telegram bot that removes paywalls from articles posted by users. It w
 ## Technologies Used
 
 - Node.js
-- Telegram Bot API
-- Puppeteer
+- Telegram GrammY framework
 - Backendless
 
 ## Contributing
