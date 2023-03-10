@@ -1,13 +1,13 @@
 import { Bot, session } from 'grammy';
 import dotenv from 'dotenv';
-import { MyContext, SessionData } from './types/types';
-import { checkUserMiddleware } from './middleware/checkUser';
-import { checkUrlMiddleware } from './middleware/checkUrl';
-import { addUserCommand } from './commands/addUser';
-import authorizeShareMiddleware from './middleware/authorizeShare'; 
-import { statsCommand } from './commands/stats';
-import { helpMiddleware } from './commands/help';
-import { deleteUserCommand } from './commands/deleteUser';
+import { MyContext, SessionData } from '../types/types';
+import { checkUserMiddleware } from '../middleware/checkUser';
+import { checkUrlMiddleware } from '../middleware/checkUrl';
+import { addUserCommand } from '../commands/addUser';
+import authorizeShareMiddleware from '../middleware/authorizeShare'; 
+import { statsCommand } from '../commands/stats';
+import { helpMiddleware } from '../commands/help';
+import { deleteUserCommand } from '../commands/deleteUser';
 
 dotenv.config();
 

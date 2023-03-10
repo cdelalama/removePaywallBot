@@ -7,12 +7,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc -w --skipLibCheck",
-    "dev": "nodemon rpw_bot.ts"
+    "dev": "nodemon src/rpw_bot.ts"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
-    "firebase": "^9.17.2",
-    "firebase-admin": "^11.5.0",
     "grammy": "^1.14.1",
     "grammy-scenes": "^7.3.0",
     "nodemon": "^2.0.21",
@@ -20,13 +18,13 @@
   },
   "name": "removepaywallbot",
   "version": "1.0.0",
-  "main": "rpw_bot.js",
+  "main": "src/rpw_bot.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cdelalama/removePaywallBot.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "cdelalama",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/cdelalama/removePaywallBot/issues"
   },
