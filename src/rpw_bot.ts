@@ -8,6 +8,8 @@ import authorizeShareMiddleware from '../middleware/authorizeShare';
 import { statsCommand } from '../commands/stats';
 import { helpMiddleware } from '../commands/help';
 import { deleteUserCommand } from '../commands/deleteUser';
+import { adminCommand, adminMiddleware } from '../commands/admin'; // Import the new command and middleware
+
 
 dotenv.config();
 
@@ -24,6 +26,7 @@ bot.use(checkUserMiddleware);
 bot.use(checkUrlMiddleware);
 bot.use(authorizeShareMiddleware); 
 bot.use(helpMiddleware);
+bot.use(adminMiddleware); 
 
 
 
@@ -46,6 +49,7 @@ bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'));
 bot.command(addUserCommand.command, addUserCommand.handler);
 bot.command(statsCommand.command, statsCommand.handler);
 bot.command(deleteUserCommand.command, deleteUserCommand.handler);
+bot.command(adminCommand.command, adminCommand.handler);
 
 
 

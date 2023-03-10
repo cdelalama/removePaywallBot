@@ -21,6 +21,7 @@ const authorizeShare_1 = __importDefault(require("../middleware/authorizeShare")
 const stats_1 = require("../commands/stats");
 const help_1 = require("../commands/help");
 const deleteUser_1 = require("../commands/deleteUser");
+const admin_1 = require("../commands/admin"); // Import the new command and middleware
 dotenv_1.default.config();
 const bot = new grammy_1.Bot(process.env.TelegramToken);
 // Define the initial session value.
@@ -33,6 +34,7 @@ bot.use(checkUser_1.checkUserMiddleware);
 bot.use(checkUrl_1.checkUrlMiddleware);
 bot.use(authorizeShare_1.default);
 bot.use(help_1.helpMiddleware);
+bot.use(admin_1.adminMiddleware);
 // Handle the callback query for the "1" button
 bot.on('callback_query:data', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     if (ctx.session.url) {
@@ -50,6 +52,7 @@ bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'));
 bot.command(addUser_1.addUserCommand.command, addUser_1.addUserCommand.handler);
 bot.command(stats_1.statsCommand.command, stats_1.statsCommand.handler);
 bot.command(deleteUser_1.deleteUserCommand.command, deleteUser_1.deleteUserCommand.handler);
+bot.command(admin_1.adminCommand.command, admin_1.adminCommand.handler);
 // Start the bot.
 bot.api.deleteWebhook();
 bot.start();
