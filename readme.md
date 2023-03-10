@@ -51,7 +51,7 @@ The bot uses [Backendless](https://backendless.com/) to store user data. The dat
 | created        | Date    | Timestamp of when the object was created        |
 | updated        | Date    | Timestamp of when the object was last updated   |
 
-Note that telegramUsername is an optional field, since not all users may have a username associated with their account
+Note that `telegramUsername` is an optional field, since not all users may have a username associated with their account
 
 ## Technologies Used
 
