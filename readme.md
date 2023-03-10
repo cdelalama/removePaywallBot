@@ -1,41 +1,54 @@
 # Remove Paywall Telegram Bot
 
-The Remove Paywall Telegram Bot is a Telegram bot that helps you bypass paywalls by detecting URLs in messages and providing a button to remove the paywall. It also includes features such as user authentication and user statistics.
+This is a Telegram bot that removes paywalls from articles posted by users. It works by detecting URLs in messages sent to the bot, and then retrieving the content of those pages using a headless browser (Puppeteer). If the page contains a paywall, the bot attempts to remove it and sends the content of the article back to the user.
 
 ## Features
 
-- Detects URLs in messages and provides a button to remove the paywall
-- User authentication: only authorized users can use the bot
-- User statistics: keeps track of the number of calls for each user and provides stats for admins
-- Admin commands: includes commands to add and delete users and view user stats
-- Help command: provides a list of available commands
+- Detects URLs in messages sent to the bot
+- Uses Puppeteer to retrieve the content of the URL
+- Attempts to remove paywalls from the content
+- Sends the content of the article back to the user
+- Maintains a count of the number of times a user has called the bot
+- Admin users can view stats about users and links pasted
+- Admin users can add and delete authorized users
 
 ## Installation
 
-1. Clone this repository: `git clone https://github.com/username/Remove-Paywall-Telegram-Bot.git`
-2. Install dependencies: `npm install`
-3. Create a `.env` file with the following variables:
-   - `TelegramToken`: your Telegram bot token
-   - `BackendlessAppId`: your Backendless App ID
-   - `BackendlessApiKey`: your Backendless API Key
-   - `adminUserIds`: a comma-separated list of user IDs that should have admin privileges
-4. Start the bot: `npm start`
+1. Clone this repository
+2. Install the required dependencies by running `npm install`
+3. Create a `.env` file based on the provided `.env.example` file
+4. Run the bot by executing `npm start`
 
 ## Usage
 
-Once the bot is running and authorized in your Telegram account, you can start using it by sending a message with a URL. If the URL is detected, the bot will send a message with a button to remove the paywall. Only authorized users can use the bot, and admins have access to additional commands to manage users and view stats.
+1. Start a chat with the bot by searching for it on Telegram
+2. Send a message containing a URL
+3. The bot will attempt to remove any paywall and send the content of the article back to you
 
-Available commands:
+## Commands
 
-- `/adduser <username>`: adds a user to the authorized user list (admin only)
-- `/deleteuser <username or ID>`: deletes a user from the authorized user list (admin only)
-- `/stats`: displays user statistics (admin only)
-- `/help`: displays available commands
+- `/help`: Shows a list of available commands
+- `/stats`: Shows stats about users and links pasted (admin only)
+- `/adduser`: Adds an authorized user to the "rpw_users" table (admin only)
+- `/deleteuser`: Deletes an authorized user from the "rpw_users" table (admin only)
+
+## Middleware
+
+- `checkUrlMiddleware`: Middleware that detects URLs in messages sent to the bot and increments the user's number of calls
+- `checkUserMiddleware`: Middleware that checks if the user is authorized to use the bot (admin only)
+- `helpMiddleware`: Middleware that intercepts the `/help` command and displays a list of available commands
+
+## Technologies Used
+
+- Node.js
+- Telegram Bot API
+- Puppeteer
+- Backendless
 
 ## Contributing
 
-Contributions are welcome! If you find a bug or have a feature request, please open an issue or submit a pull request.
+If you find any bugs or have suggestions for new features, please open an issue or submit a pull request.
 
 ## License
 
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
