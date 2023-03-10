@@ -37,6 +37,22 @@ This is a Telegram bot that removes paywalls from articles posted by users. It w
 - `checkUserMiddleware`: Middleware that checks if the user is authorized to use the bot (admin only)
 - `helpMiddleware`: Middleware that intercepts the `/help` command and displays a list of available commands
 
+## Backendless Data Structure
+
+The bot uses [Backendless](https://backendless.com/) to store user data. The data is stored in a table called "rpw_users" and has the following fields:
+
+| Field           | Type    | Description                                    |
+|----------------|---------|------------------------------------------------|
+| objectId       | String  | Unique identifier for the object               |
+| telegramId     | String  | Telegram ID of the user                        |
+| telegramUsername | String  | Telegram username of the user                  |
+| number_calls   | Integer | Number of times the user has called the bot     |
+| isAdmin        | Boolean | Whether the user is an admin or not             |
+| created        | Date    | Timestamp of when the object was created        |
+| updated        | Date    | Timestamp of when the object was last updated   |
+
+Note that telegramUsername is an optional field, since not all users may have a username associated with their account
+
 ## Technologies Used
 
 - Node.js
