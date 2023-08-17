@@ -38,9 +38,10 @@ bot.use(admin_1.adminMiddleware);
 // Handle the callback query for the "1" button
 bot.on('callback_query:data', (ctx) => __awaiter(void 0, void 0, void 0, function* () {
     if (ctx.session.url) {
-        // Modify the URL by appending "https://12ft.io/" to it
-        const modifiedUrl = `https://12ft.io/${ctx.session.url.replace('www', 'amp')}`;
-        yield ctx.reply(`Paywall removed. Here's the URL: ${modifiedUrl}`);
+        // Modify the URL by always prepending "amp."
+        const modifiedUrl = ctx.session.url.replace(/^https?:\/\/(www\.)?/, 'https://amp.');
+        const finalUrl = `https://12ft.io/${modifiedUrl}`;
+        yield ctx.reply(`Paywall removed. Here's the URL: ${finalUrl}`);
         delete ctx.session.url; // Remove the URL from the session data
     }
     else {

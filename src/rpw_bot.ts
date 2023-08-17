@@ -35,14 +35,16 @@ bot.use(adminMiddleware);
 // Handle the callback query for the "1" button
 bot.on('callback_query:data', async (ctx) => {
   if (ctx.session.url) {
-    // Modify the URL by appending "https://12ft.io/" to it
-    const modifiedUrl = `https://12ft.io/${ctx.session.url.replace('www', 'amp')}`;
-    await ctx.reply(`Paywall removed. Here's the URL: ${modifiedUrl}`);
+    // Modify the URL by always prepending "amp."
+    const modifiedUrl = ctx.session.url.replace(/^https?:\/\/(www\.)?/, 'https://amp.');
+    const finalUrl = `https://12ft.io/${modifiedUrl}`;
+    await ctx.reply(`Paywall removed. Here's the URL: ${finalUrl}`);
     delete ctx.session.url; // Remove the URL from the session data
   } else {
     await ctx.reply('No URL was detected.');
   }
 });
+
 
 // Handle the /start command.
 bot.command('start', (ctx) => ctx.reply('Welcome! Up and running.'));
